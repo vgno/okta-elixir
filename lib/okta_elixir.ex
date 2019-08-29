@@ -21,9 +21,9 @@ defmodule OktaElixir do
   end
 
   defp generate_post_body(code) do
-    "grant_type=authorization_code&redirect_uri=#{Application.get_env(:okta_auth, :redirect_uri)}&code=#{
-      code
-    }"
+    redirect_uri = Application.get_env(:okta_auth, :redirect_uri)
+
+    "grant_type=authorization_code&redirect_uri=#{redirect_uri}&code=#{code}"
   end
 
   defp get_post_url do
