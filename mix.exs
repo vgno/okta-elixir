@@ -42,4 +42,10 @@ defmodule OktaElixir.MixProject do
     Library to help you log in to an Okta application.
     """
   end
+
+  defp deps do
+    [
+      {:ex_doc, ">= 0.0.0", only: :dev}
+    ]
+  end
 end
