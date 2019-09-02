@@ -2,13 +2,16 @@ defmodule OktaElixir do
   @okta_domain_url "https://#{Application.get_env(:okta_auth, :domain)}"
   @okta_post_url "#{@okta_domain_url}/ouath/v1/token"
   @okta_keys_url "#{@okta_domain_url}/v1/keys"
+
+  alias OktaElixir.Randomizer
+
   def short_token_url do
     redirect_uri = URI.encode(Application.get_env(:okta_auth, :redirect_uri))
     client_id = Application.get_env(:okta_auth, :client_id)
 
-    "#{@okta_domain_url}/oauth2/v1/authorize?client_id=#{client_id}&response_type=code&state=GENERATE_RANDOM_STRING&scope=openid&redirect_uri=#{
-      redirect_uri
-    }"
+    "#{@okta_domain_url}/oauth2/v1/authorize?client_id=#{client_id}&response_type=code&state=#{
+      Randomizer.randomizer(10)
+    }&scope=openid&redirect_uri=#{redirect_uri}"
   end
 
   def exchange_short_token(code) do
