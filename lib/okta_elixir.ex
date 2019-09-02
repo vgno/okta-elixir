@@ -1,10 +1,12 @@
 defmodule OktaElixir do
+  @okta_domain_url "https://#{Application.get_env(:okta_auth, :domain)}"
+  @okta_post_url "#{@okta_domain_url}/ouath/v1/token"
+  @okta_keys_url "#{@okta_domain_url}/v1/keys"
   def short_token_url do
-    okta_domain = Application.get_env(:okta_auth, :domain)
     redirect_uri = URI.encode(Application.get_env(:okta_auth, :redirect_uri))
     client_id = Application.get_env(:okta_auth, :client_id)
 
-    "https://#{okta_domain}/oauth2/v1/authorize?client_id=#{client_id}&response_type=code&state=123&scope=openid&redirect_uri=#{
+    "#{@okta_domain_url}/oauth2/v1/authorize?client_id=#{client_id}&response_type=code&state=GENERATE_RANDOM_STRING&scope=openid&redirect_uri=#{
       redirect_uri
     }"
   end
@@ -16,7 +18,12 @@ defmodule OktaElixir do
       "Content-Type": "application/x-www-form-urlencoded"
     ]
 
-    HTTPoison.post(get_post_url(), generate_post_body(code), headers)
+    HTTPoison.post(@okta_post_url, generate_post_body(code), headers)
+    |> handle_response
+  end
+
+  defp get_public_keys do
+    HTTPoison.get(@okta_keys_url)
     |> handle_response
   end
 
@@ -24,12 +31,6 @@ defmodule OktaElixir do
     redirect_uri = Application.get_env(:okta_auth, :redirect_uri)
 
     "grant_type=authorization_code&redirect_uri=#{redirect_uri}&code=#{code}"
-  end
-
-  defp get_post_url do
-    okta_domain = Application.get_env(:okta_auth, :domain)
-
-    "https://#{okta_domain}/oauth2/v1/token"
   end
 
   defp get_basic_header do
