@@ -2,7 +2,7 @@ defmodule OktaElixir do
   alias OktaElixir.Randomizer
 
   @okta_domain_url "https://#{Application.get_env(:okta_auth, :domain)}"
-  @okta_post_url "#{@okta_domain_url}/ouath/v1/token"
+  @okta_post_url "#{@okta_domain_url}/oauth2/v1/token"
   @okta_keys_url "#{@okta_domain_url}/v1/keys"
 
   def short_token_url do
@@ -14,19 +14,23 @@ defmodule OktaElixir do
     }&scope=openid&redirect_uri=#{redirect_uri}"
   end
 
+  def verify_token(_token) do
+    true
+  end
+
   def get_public_jwt_keys do
     HTTPoison.get(@okta_keys_url)
     |> handle_response
   end
 
-  def exchange_short_token(code) do
+  def exchange_short_token(token) do
     headers = [
       Accept: "application/json",
       Authorization: "Basic #{get_basic_header()}",
       "Content-Type": "application/x-www-form-urlencoded"
     ]
 
-    HTTPoison.post(@okta_post_url, generate_post_body(code), headers)
+    HTTPoison.post(@okta_post_url, generate_post_body(token), headers)
     |> handle_response
   end
 
@@ -44,6 +48,8 @@ defmodule OktaElixir do
   end
 
   defp handle_response(response) do
+    IO.inspect(response)
+
     case response do
       {:ok, %HTTPoison.Response{body: body}} ->
         Jason.decode!(body)

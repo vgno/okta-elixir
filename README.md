@@ -1,11 +1,34 @@
 # OktaElixir
 
-**TODO: Add description**
+Okta interface written in Elixir. Currently only supporting authentication (OpenID/OAuth V2).
+
+## Methods
+
+### short_token_url/0 -> String
+
+Generates URL from which you receive a short-lived access token.
+
+### exchange_short_token/1 (token: String) -> %{}
+
+Returns a struct containing tokens, expires_in, and metadata.
+
+```elixir
+%{
+  "access_token" => String,
+  "expires_in" => Integer,
+  "id_token" => String,
+  "scope" => String,
+  "token_type" => String
+}
+```
+
+### verify_token/1 (token: String) -> Boolean
+
+Checks if the token provided is valid.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `okta_elixir` to your list of dependencies in `mix.exs`:
+Add `okta_elixir` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -15,7 +38,12 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/okta_elixir](https://hexdocs.pm/okta_elixir).
+Add the required configuration to config/config.exs.
 
+```elixir
+config :okta_auth,
+  domain: "",
+  redirect_uri: "",
+  client_id: "",
+  client_secret: ""
+```
