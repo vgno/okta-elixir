@@ -48,11 +48,9 @@ defmodule OktaElixir do
   end
 
   defp handle_response(response) do
-    IO.inspect(response)
-
     case response do
       {:ok, %HTTPoison.Response{body: body}} ->
-        Jason.decode!(body)
+        {:ok, Jason.decode!(body)}
 
       {:error, error} ->
         {:error, error}

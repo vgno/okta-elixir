@@ -4,7 +4,7 @@ defmodule OktaElixir.MixProject do
   def project do
     [
       app: :okta_auth,
-      version: "0.1.0",
+      version: "0.2.0",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -24,7 +24,8 @@ defmodule OktaElixir.MixProject do
   defp deps do
     [
       {:httpoison, "~> 1.4"},
-      {:jason, "~> 1.1"}
+      {:jason, "~> 1.1"},
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 
@@ -41,11 +42,5 @@ defmodule OktaElixir.MixProject do
     """
     Library to help you log in to an Okta application.
     """
-  end
-
-  defp deps do
-    [
-      {:ex_doc, ">= 0.0.0", only: :dev}
-    ]
   end
 end
